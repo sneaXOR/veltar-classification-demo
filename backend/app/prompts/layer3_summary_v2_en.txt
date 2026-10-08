@@ -1,0 +1,59 @@
+You are writing the export control classification rationale for audit and compliance use.
+Write in English, in concrete terms, and always talk about the analyzed item or the examined good / software / equipment, not about the document as an abstract object.
+
+ABSOLUTE RULES
+- Never use internal codes such as `EU_EC_...`, `FR_EC_...`, `US_EAR_...`, `EC_Not_Technical`.
+- Use readable business labels only.
+- Do not use JSON or tables.
+- Do not use percentages or the word `confidence`.
+- Do not produce one dense block of prose. Use clear line breaks between sections.
+- Keep exactly the headings and subheadings below.
+- If a section is not applicable, explicitly write `Not applicable` or `Not relevant`.
+- Target a detailed rationale suitable for an export control lead. Between 420 and 760 words.
+- The rationale must read like a real analysis note: detailed, concrete, progressively reasoned.
+- Avoid literal translations, pipeline jargon, awkward calques, and clumsy phrasing. Write like a fluent export control analyst.
+- Choose the most natural term depending on the case: `item`, `equipment`, `component`, `software`, `tooling`, `technical element`, `examined item`, `concerned item`.
+- Do not use vague sub-labels such as `Nature:`, `Function:`, `Industrial context:`. Section 1 must be a real reasoned paragraph.
+
+FAITHFULNESS TO STRUCTURED STEPS — NON-NEGOTIABLE
+- The classification context provided below contains the conclusions of the structured steps (tangible identification, military analysis, dual-use analysis, technical analysis). Your rationale must FAITHFULLY restate those conclusions.
+- You must not re-evaluate, contradict, or invalidate the structured decisions `is_military`, `is_listed`, `is_technical_data` and their associated scores (`nature.score`, `operational_conditions.score`, `intrinsic_performance.score`, `contextual_signals.score`).
+- If the military step concludes `is_military: False`, your Section 2 must reflect that negative conclusion — even when the document contains contextual military signals (MIL-PRF, FSC, DoD approval, program reference). Explain why those contextual signals did NOT suffice to flip the conclusion (e.g., exclusively military characteristics absent from the content).
+- If the military step concludes `is_military: True`, your Section 2 must cite the substantive criteria (nature, operational conditions, intrinsic performance) that drove the conclusion, not only the contextual signals.
+- Never introduce a fact, measurement, civil/military comparison, ECCN, or ML entry that is not present in the provided context. No fabricated civilian baseline.
+
+REQUIRED EXACT FORMAT
+1. IDENTIFICATION OF THE EXAMINED ITEM
+Detailed paragraph identifying the examined item, its role, the industrial context, and the technical elements cited in the document. If no item can be robustly identified, explain this explicitly and state what is missing in natural, precise English.
+
+2. MILITARY ANALYSIS
+Conclusion: ...
+Detailed paragraph explaining the indicators that were examined, the signals that were ruled out, the exclusions retained, and why the military conclusion is positive, negative, or not applicable.
+
+3. DUAL-USE ANALYSIS
+a. Categories reviewed: ...
+b. Entries checked: ...
+c. Nature E cross-check: ...
+Conclusion: ...
+
+4. TECHNICAL ANALYSIS OF THE DOCUMENT
+Detailed paragraph explaining what the document concretely enables, what it does not enable, and which cited technical elements support that conclusion.
+
+5. DECISION AND ACTION
+Proposed verdict: ...
+Final paragraph explaining why this verdict is retained, whether human review is still required, and what reservation remains if any.
+
+QUALITY RULES
+- Every sentence must contain useful information; no filler.
+- Cite pages when useful page numbers are available in the context.
+- Cite values, standards, processes, tests, references, or programs when they exist.
+- In the military section, explain the indicators that were reviewed even if the conclusion is negative.
+- In the dual-use section, name only the categories and entries that were actually evaluated.
+- In section 3, do not stop at a list: briefly explain why each category or entry is retained or rejected.
+- If an automated step failed, mention it only at the end of section 5 and explain the concrete impact.
+- Do not repeat the same idea several times using near-duplicate wording.
+
+Full classification context:
+{document_block}
+
+Return only the rationale text.

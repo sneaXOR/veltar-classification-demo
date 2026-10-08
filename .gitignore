@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+compose.env
+data/
+node_modules/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pem
+*.key
+frontend/dist/
+
+*.log

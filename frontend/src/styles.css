@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes accent-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0);
+  }
+  50% {
+    box-shadow: 0 0 0 10px hsl(var(--accent) / 0.06);
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@layer base {
+  :root {
+    --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
+    --radius: 1.15rem;
+
+    --background: 34 28% 95%;
+    --foreground: 221 23% 12%;
+    --primary: 220 18% 12%;
+    --primary-foreground: 34 35% 97%;
+    --secondary: 32 18% 91%;
+    --secondary-foreground: 220 16% 18%;
+    --muted: 32 18% 91%;
+    --muted-foreground: 220 10% 41%;
+    --accent: 22 71% 46%;
+    --accent-foreground: 35 50% 98%;
+    --border: 30 16% 82%;
+    --input: 30 16% 82%;
+    --ring: 22 71% 46%;
+
+    --card: 34 35% 98%;
+    --card-foreground: 221 23% 12%;
+    --surface: 0 0% 100%;
+
+    --destructive: 0 68% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 33% 33%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 88% 52%;
+    --warning-foreground: 20 60% 20%;
+
+    --sidebar-background: 38 30% 97%;
+    --sidebar-foreground: 221 23% 12%;
+    --sidebar-primary: 220 18% 12%;
+    --sidebar-primary-foreground: 34 35% 97%;
+    --sidebar-accent: 34 24% 92%;
+    --sidebar-accent-foreground: 220 16% 18%;
+    --sidebar-border: 30 16% 84%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    min-height: 100vh;
+    background-image: linear-gradient(180deg, hsl(var(--background)), hsl(34 20% 94%));
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.16);
+    color: hsl(var(--foreground));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen bg-background text-foreground;
+  }
+
+  .app-panel {
+    @apply rounded-[28px] shadow-panel backdrop-blur;
+    border: 1px solid hsl(var(--border) / 0.7);
+    background-color: hsl(var(--surface) / 0.92);
+  }
+
+  .app-panel-muted {
+    @apply rounded-[24px];
+    border: 1px solid hsl(var(--border) / 0.6);
+    background-color: hsl(var(--secondary) / 0.55);
+  }
+
+  .panel-header {
+    @apply flex items-center justify-between gap-4 px-5 py-4 sm:px-6;
+    border-bottom: 1px solid hsl(var(--border) / 0.7);
+  }
+
+  .panel-body {
+    @apply px-5 py-5 sm:px-6 sm:py-6;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  .section-title {
+    @apply text-[1.05rem] font-semibold tracking-tight text-foreground sm:text-[1.15rem];
+  }
+
+  .section-copy {
+    @apply text-sm leading-6 text-muted-foreground;
+  }
+
+  .metric-value {
+    @apply text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+  }
+
+  .metric-label {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  .workspace-divider {
+    border-top: 1px solid hsl(var(--border) / 0.7);
+  }
+
+  .list-row {
+    @apply rounded-[22px] border px-4 py-4 transition-all duration-200;
+    border-color: transparent;
+  }
+
+  .list-row:hover {
+    border-color: hsl(var(--border) / 0.7);
+    background-color: hsl(var(--surface) / 0.7);
+    transform: translateY(-1px);
+  }
+
+  .drop-surface {
+    @apply relative overflow-hidden rounded-[32px] bg-surface px-6 py-8 transition-all duration-300 sm:px-8 sm:py-10;
+    border: 1px solid hsl(var(--border) / 0.8);
+  }
+
+  .drop-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, hsl(var(--surface)), hsl(var(--surface)));
+    pointer-events: none;
+  }
+
+  .drop-surface-active {
+    @apply border-[hsl(var(--accent))];
+    animation: accent-glow 1.8s ease-in-out infinite;
+  }
+
+  .sticky-rail {
+    @apply xl:sticky xl:top-6;
+  }
+}

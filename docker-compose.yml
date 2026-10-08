@@ -1,0 +1,118 @@
+name: veltar-classifier
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: veltar_classifier
+      POSTGRES_USER: veltar
+      POSTGRES_PASSWORD: veltar
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veltar -d veltar_classifier"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+  # qwen service disabled - using an external OpenAI-compatible API endpoint instead
+  # To re-enable local inference, uncomment this block and set LLM_BASE_URL=http://qwen:8080/v1
+  # qwen:
+  #   image: ghcr.io/ggml-org/llama.cpp:server-cuda
+  #   ...
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - compose.env
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://veltar:veltar@postgres:5432/veltar_classifier
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_ROOT: /app/data/storage
+      KB_ROOT: /app/kb
+      PROMPTS_ROOT: /app/backend/app/prompts
+      LLM_VERIFY_SSL: "true"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5).read()",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - compose.env
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://veltar:veltar@postgres:5432/veltar_classifier
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_ROOT: /app/data/storage
+      KB_ROOT: /app/kb
+      PROMPTS_ROOT: /app/backend/app/prompts
+      LLM_VERIFY_SSL: "true"
+      WAIT_FOR_URLS: http://backend:8000/health
+    volumes:
+      - ./data:/app/data
+    command: ["python", "/app/backend/worker_entrypoint.py"]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:80"
+
+volumes:
+  pgdata:
+

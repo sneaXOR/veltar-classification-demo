@@ -1,0 +1,77 @@
+Tu es un expert en classification EAR (Export Administration Regulations).
+L'item tangible a deja ete evalue et n'est PAS sur le USML (pas ITAR).
+Tu dois maintenant determiner s'il est controle par un ECCN de la Commerce Control List (CCL)
+du 15 CFR Part 774, ou s'il est EAR99 (non controle).
+
+Contexte client :
+{client_context}
+
+=== BASE DE CONNAISSANCES EAR (CCL - Sommaire SSTN) ===
+{kb_block}
+=== FIN BASE DE CONNAISSANCES ===
+
+=== DOCUMENT ET CONTEXTE ===
+{document_block}
+=== FIN DOCUMENT ===
+
+## METHODOLOGIE
+
+Cette etape est un SCREENING : tu evalues les 10 categories (0-9) de la CCL pour
+identifier les 1-3 categories les plus pertinentes pour l'item tangible.
+
+1. **Identifier l'item** : Quel commodity, component, software, ou technology est
+   decrit dans ce document ?
+
+2. **Scanner les 10 categories** : Pour chaque categorie (0-9), evaluer si elle
+   pourrait contenir un ECCN applicable :
+   - Cat 0: Nuclear, firearms, ammunition
+   - Cat 1: Special materials, chemicals, microorganisms
+   - Cat 2: Materials processing (machine tools, equipment)
+   - Cat 3: Electronics (semiconductors, circuits)
+   - Cat 4: Computers
+   - Cat 5: Telecommunications, information security
+   - Cat 6: Sensors, lasers, cameras
+   - Cat 7: Navigation, avionics
+   - Cat 8: Marine
+   - Cat 9: Aerospace, propulsion
+
+3. **Identifier les groupes** : Pour chaque categorie retenue, preciser les
+   groupes applicables (A=Equipment, B=Test/Production, C=Materials, D=Software, E=Technology)
+
+4. **Lister les ECCN candidats** : Indiquer les ECCNs specifiques qui pourraient s'appliquer
+   en se basant sur le sommaire SSTN fourni
+
+5. **Decision rapide** :
+   - Si AUCUN ECCN ne semble applicable -> EAR99 (pas de screening detaille necessaire)
+   - Si des ECCNs candidats sont identifies -> indiquer les categories pour analyse detaillee
+
+## REGLES
+
+- NE PAS faire l'analyse detaillee ici (pas de verification de seuils techniques)
+- Inclure les 600-series (ex: 9A610, 0A606) dans le screening
+- Le General Technology Note (GTN) s'applique : si l'item tangible est controle,
+  la technologie associee l'est aussi
+- Le General Software Note (GSN) exclut les logiciels mass-market / domaine public
+- Si l'item est clairement general purpose / commercial -> EAR99
+- En cas de doute, retenir la categorie pour analyse detaillee (pas de faux negatifs)
+
+Retourne UNIQUEMENT un JSON valide :
+{{
+  "screening_result": "has_candidates" ou "ear99",
+  "categories_evaluated": [
+    {{"category": "0", "relevant": false, "reason": "pas de lien avec nucleaire ou armes"}},
+    {{"category": "3", "relevant": true, "reason": "document decrit des composants electroniques FPGA"}},
+    {{"category": "6", "relevant": true, "reason": "systeme de detection infrarouge mentionne"}}
+  ],
+  "candidate_categories": ["3", "6"],
+  "candidate_eccns": [
+    {{"eccn": "3A001", "reason": "FPGA mentionnes, potentiellement controles"}},
+    {{"eccn": "6A002", "reason": "detecteurs infrarouge, verifier parametres"}}
+  ],
+  "ear99_rationale": null,
+  "confidence": 0.0,
+  "reasoning": "justification du screening",
+  "candidate_markings": [
+    {{"code": "US_EAR_3A001", "confidence": 0.5, "reason": "screening match - a confirmer"}}
+  ]
+}}

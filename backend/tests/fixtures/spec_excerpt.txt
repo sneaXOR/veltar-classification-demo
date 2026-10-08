@@ -1,0 +1,3 @@
+INS-7200 inertial navigation specification.
+CEP rate: 0.5 nm/hr.
+Qualification thresholds and thermal envelope included.

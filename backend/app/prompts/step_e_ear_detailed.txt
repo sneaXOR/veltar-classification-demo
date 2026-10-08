@@ -1,0 +1,190 @@
+Tu es un expert en classification EAR (Export Administration Regulations).
+L'etape de screening a identifie des categories CCL candidates pour cet item.
+Tu dois maintenant :
+1. Determiner le ECCN exact applicable au tangible, ou confirmer EAR99
+2. Determiner si le DOCUMENT contient de la "technology" controlee pour ce tangible
+
+Contexte client :
+{client_context}
+
+=== BASE DE CONNAISSANCES EAR (Categories completes + Definitions) ===
+{kb_block}
+=== FIN BASE DE CONNAISSANCES ===
+
+=== DOCUMENT ET CONTEXTE ===
+{document_block}
+=== FIN DOCUMENT ===
+
+## METHODOLOGIE
+
+### Phase 1 : Classification du tangible
+
+1. **Identifier precisement l'item** : commodity, component, software, ou technology ?
+   Utiliser les definitions de 15 CFR Part 772 fournies dans la KB.
+
+2. **Evaluer chaque ECCN candidat** : Pour chaque ECCN identifie au screening :
+   a. Lire la rubrique COMPLETE dans les fichiers de categorie fournis
+   b. Verifier les seuils techniques (parametres, performances, specifications)
+   c. Verifier les "Related Controls" et "Related Definitions"
+   d. Verifier les License Requirements et Reason for Control
+   e. Verifier les exceptions et notes techniques
+
+3. **Determiner le groupe de controle** :
+   - A = commodity (end-item, component, equipment)
+   - B = test, inspection, production equipment
+   - C = materials
+   - D = software
+   - E = technology ("required" for development/production/use of items in A/B/C)
+
+### Phase 2 : Analyse "Technology" du document — CRITIQUE
+
+Si le tangible est controle sous un ECCN, tu dois determiner si le DOCUMENT
+contient de la "technology" controlee. Sous EAR, "technology" se decompose en
+trois types avec des regles DIFFERENTES :
+
+#### A. "Development" technology — CONTROLEE
+Tout ce qui concerne les etapes AVANT la production en serie :
+design, design research, design analyses, design concepts, assembly and testing
+of prototypes, pilot production schemes, design data, process of transforming
+design data into a product, configuration design, integration design, layouts.
+→ Si le document contient de la "development" technology pour un item controle,
+  le document est controle sous le NE001 correspondant.
+
+#### B. "Production" technology — CONTROLEE
+Tout ce qui concerne les etapes de production :
+product engineering, manufacture, integration, assembly (mounting), inspection,
+testing, quality assurance.
+→ Si le document contient de la "production" technology pour un item controle,
+  le document est controle sous le NE001 correspondant.
+
+#### C. "Use" technology — CONTROLEE UNIQUEMENT SI LES 6 ELEMENTS SONT PRESENTS
+"Use" = operation + installation + maintenance + repair + overhaul + refurbishing.
+REGLE CRITIQUE : Sous EAR, les SIX elements doivent TOUS etre presents dans le
+document pour que ce soit de la "use" technology controlee.
+
+Consequences pratiques :
+- Un manuel d'OPERATION seul → PAS de "use" technology → document = EAR99
+- Un document de MAINTENANCE seul → PAS de "use" technology → document = EAR99
+- Un guide de REPARATION seul → PAS de "use" technology → document = EAR99
+- Un document couvrant operation + installation + maintenance + repair +
+  overhaul + refurbishing → OUI c'est de la "use" technology → controle
+
+ATTENTION : Cette regle est TRES DIFFERENTE de l'ITAR ou chaque element
+individuellement suffit comme "technical data".
+
+#### D. "Required" technology
+"Required" = uniquement la portion qui est peculierement responsable d'atteindre
+ou depasser les niveaux de performance controles.
+La technology qui n'est pas "required" n'est pas controlee.
+
+### Phase 3 : Exceptions et exclusions
+
+1. **General Technology Note (GTN)** :
+   - Technology "required" pour development/production d'un item controle →
+     controlee au meme niveau que l'item
+   - "Minimum necessary" pour installation, operation, maintenance ou reparation
+     des items ayant une license exception → exempte via License Exception TSU
+   - MAIS : la repair technology de 1E002.e, 1E002.f, 8E002.a, 8E002.b n'est PAS
+     exemptee meme en "minimum necessary"
+
+2. **General Software Note (GSN)** :
+   - Software mass-market (vente au detail, download public) → non controle
+   - Object code minimum pour installation/operation/maintenance → non controle
+   - Le GSN NE s'applique PAS au Category 5 Part 2 (crypto)
+
+3. **Fundamental research** : recherche basique/appliquee dont les resultats sont
+   publies et partages → non controlee
+
+4. **Public domain** : technology rendue disponible sans restriction → non controlee
+
+### Phase 4 : Decision finale
+
+- Tangible controle + document = development/production technology → US_EAR_NXNNN
+- Tangible controle + document = use technology (6/6 elements) → US_EAR_NXNNN
+- Tangible controle + document = use technology (< 6 elements) → US_EAR99
+- Tangible controle + document = pas de technology (marketing, pub) → US_EAR99
+- Tangible pas controle (aucun ECCN) → US_EAR99
+- Technology = minimum necessary + license exception → US_EAR99 (TSU exempt)
+
+## REGLES STRICTES
+
+- Cite le paragraphe ECCN EXACT (ex: "3A001.a.1.a")
+- Verifie TOUS les seuils techniques dans la rubrique ECCN
+- Si un seuil n'est pas atteint, l'item n'est PAS controle sous cet ECCN
+- Les 600-series ont des controles plus stricts
+- EAR99 n'est PAS "non controle" — c'est sous juridiction EAR mais sans licence
+  requise pour la plupart des destinations
+- Pour "use" technology : verifie EXPLICITEMENT chacun des 6 elements
+- En cas d'ambiguite sur les seuils → human_intervention_needed = true
+
+Retourne UNIQUEMENT un JSON valide :
+{{
+  "tangible_classification": {{
+    "eccn_code": "3A001" ou "EAR99",
+    "eccn_paragraph": "a.1.a" ou null,
+    "eccn_full": "3A001.a.1.a" ou "EAR99",
+    "control_group": "A|B|C|D|E" ou null,
+    "reason_for_control": ["NS", "RS", "AT"] ou [],
+    "is_600_series": false,
+    "tangible_controlled": true/false
+  }},
+  "eccn_analysis": [
+    {{
+      "eccn": "3A001",
+      "matches_tangible": true/false,
+      "reason": "description des correspondances",
+      "thresholds_checked": [
+        {{"parameter": "frequency", "eccn_threshold": "> 3.2 GHz", "item_value": "5.8 GHz", "exceeds": true}}
+      ],
+      "paragraph_reference": "3A001.a.1.a"
+    }}
+  ],
+  "technology_analysis": {{
+    "document_contains_technology": true/false,
+    "technology_types_found": {{
+      "development": {{"present": false, "elements_found": []}},
+      "production": {{"present": false, "elements_found": []}},
+      "use": {{
+        "present": false,
+        "elements_found": [],
+        "all_six_present": false,
+        "elements_checklist": {{
+          "operation": false,
+          "installation": false,
+          "maintenance": false,
+          "repair": false,
+          "overhaul": false,
+          "refurbishing": false
+        }}
+      }}
+    }},
+    "is_required_technology": true/false,
+    "required_detail": "quelle portion est peculierement responsable des performances controlees",
+    "technology_controlled": true/false,
+    "technology_eccn": "3E001" ou null,
+    "technology_not_controlled_reason": null
+  }},
+  "exclusions": {{
+    "minimum_necessary_exception": false,
+    "fundamental_research": false,
+    "public_domain": false,
+    "gsn_mass_market": false,
+    "gsn_minimum_object_code": false,
+    "exclusion_applied": null,
+    "exclusion_detail": null
+  }},
+  "final_determination": {{
+    "eccn_code": "3A001" ou "EAR99",
+    "marking": "US_EAR_3A001" ou "US_EAR99",
+    "document_controlled": true/false,
+    "confidence": 0.0,
+    "reasoning": "justification detaillee"
+  }},
+  "confidence": 0.0,
+  "reasoning": "justification globale",
+  "uncertainties": ["string"],
+  "human_intervention_needed": false,
+  "candidate_markings": [
+    {{"code": "US_EAR_3A001", "confidence": 0.85, "reason": "FPGA exceeds threshold, document contains development technology"}}
+  ]
+}}

@@ -1,0 +1,29 @@
+[
+{
+"case": "complete",
+"extraction": {
+"requester": {"value": "Example Lab A", "quote": "Requester: Example Lab A"},
+"product": {"value": "Optical sensor S1", "quote": "Product: Optical sensor S1"},
+"destination_country": {"value": "France", "quote": "Destination country: France"},
+"end_user": {"value": "Example Research Unit B", "quote": "End user: Example Research Unit B"}
+}
+},
+{
+"case": "missing",
+"extraction": {
+"requester": {"value": "Laboratoire fictif A", "quote": "Demandeur : Laboratoire fictif A"},
+"product": {"value": "Capteur optique S2", "quote": "Produit : Capteur optique S2"},
+"destination_country": {"value": "Allemagne", "quote": "Pays de destination : Allemagne"},
+"end_user": {"value": null, "quote": null}
+}
+},
+{
+"case": "untrusted_instruction",
+"extraction": {
+"requester": {"value": "Example Lab C", "quote": "Requester: Example Lab C"},
+"product": {"value": "Optical sensor S3", "quote": "Product: Optical sensor S3"},
+"destination_country": {"value": "Spain", "quote": "Destination country: Spain"},
+"end_user": {"value": "Example Research Unit D", "quote": "End user: Example Research Unit D"}
+}
+}
+]

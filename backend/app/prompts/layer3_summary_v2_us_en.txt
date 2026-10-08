@@ -1,0 +1,56 @@
+You are writing the US export control classification rationale (ITAR / EAR) for audit and compliance use.
+Write in English, in concrete terms, and always talk about the analyzed item or the examined good / software / equipment, not about the document as an abstract object.
+
+ABSOLUTE RULES
+- The classification falls under US regulations: ITAR (USML) and EAR (Commerce Control List).
+- NEVER reference European regulations (EU dual-use, Nature E, Annex I, French military list).
+- Never use internal codes such as `EU_EC_...`, `FR_EC_...`, `EC_Not_Technical`.
+- Use readable business labels only.
+- Do not use JSON or tables.
+- Do not use percentages or the word `confidence`.
+- Do not produce one dense block of prose. Use clear line breaks between sections.
+- Keep exactly the headings and subheadings below.
+- If a section is not applicable, explicitly write `Not applicable` or `Not relevant`.
+- Target a detailed rationale suitable for an export control lead. Between 420 and 760 words.
+- The rationale must read like a real analysis note: detailed, concrete, progressively reasoned.
+- Avoid literal translations, pipeline jargon, awkward calques, and clumsy phrasing. Write like a fluent export control analyst.
+- Choose the most natural term depending on the case: `item`, `equipment`, `component`, `software`, `tooling`, `technical element`, `examined item`, `concerned item`.
+
+FAITHFULNESS TO STRUCTURED STEPS — NON-NEGOTIABLE
+- The classification context provided below contains the conclusions of the structured steps (tangible identification, ITAR analysis, EAR screening, detailed EAR, technical analysis). Your rationale must FAITHFULLY restate those conclusions.
+- You must not re-evaluate, contradict, or invalidate the structured decisions (`is_usml`, `eccn_screening`, `is_technical_data`, etc.).
+- If a step concludes negatively, the corresponding section must reflect that conclusion — even when contextual signals (MIL-SPEC, program references) are present. Explain why those signals did NOT suffice.
+- Never introduce a fact, measurement, comparison, USML category, or ECCN that is not present in the provided context. No fabricated baseline.
+
+REQUIRED EXACT FORMAT
+1. IDENTIFICATION OF THE EXAMINED ITEM
+Detailed paragraph identifying the examined item, its role, the industrial context, and the technical elements cited in the document. If no item can be robustly identified, explain this explicitly and state what is missing in natural, precise English.
+
+2. ITAR ASSESSMENT
+Conclusion: ...
+Detailed paragraph explaining whether the item falls under the United States Munitions List (USML), which category is targeted, whether the document contains technical data under § 120.33, and why the ITAR conclusion is positive, negative, or not applicable.
+
+3. EAR / CCL ANALYSIS
+Conclusion: ...
+Paragraph explaining whether the item falls under the Commerce Control List (CCL), which ECCN is retained or rejected, and why. If the item is classified EAR99, explain. Do NOT reference European regulations at all.
+
+4. TECHNICAL ANALYSIS OF THE DOCUMENT
+Detailed paragraph explaining what the document concretely enables, what it does not enable, and which cited technical elements support that conclusion.
+
+5. DECISION AND ACTION
+Proposed verdict: ...
+Final paragraph explaining why this verdict is retained, whether human review is still required, and what reservation remains if any.
+
+QUALITY RULES
+- Every sentence must contain useful information; no filler.
+- Cite pages when useful page numbers are available in the context.
+- Cite values, standards, processes, tests, references, or programs when they exist.
+- In the ITAR section, explain the indicators that were reviewed even if the conclusion is negative.
+- In the EAR section, name only the categories and ECCNs that were actually evaluated.
+- If an automated step failed, mention it only at the end of section 5 and explain the concrete impact.
+- Do not repeat the same idea several times using near-duplicate wording.
+
+Full classification context:
+{document_block}
+
+Return only the rationale text.

@@ -1,0 +1,80 @@
+Détermine si le document porte sur un BIEN TANGIBLE spécifique (composant, équipement, système, matériau, logiciel spécifique, outillage) et, le cas échéant, identifie-le.
+
+CONTEXTE CLIENT :
+{client_context}
+
+═══════════════════════════════════════════════════════════════
+ÉTAPE 1 — LE DOCUMENT PORTE-T-IL SUR UN BIEN TANGIBLE ?
+═══════════════════════════════════════════════════════════════
+
+Un tangible est un objet concret et identifiable : un composant, un équipement, un matériau, un système, un outillage, un logiciel spécifique. Le document doit porter SUR ce bien — le décrire, le spécifier, expliquer comment le développer, le produire, le tester, le maintenir ou l'utiliser.
+
+Test : « Peut-on nommer un objet physique ou un logiciel PRÉCIS dont ce document transmet du savoir-faire technique ? »
+- OUI → `item_identified: true`, passer à l'étape 2
+- NON → `item_identified: false`, s'arrêter là
+
+Exemples de `item_identified: true` :
+- Un plan coté d'un support moteur → tangible : support moteur (composant)
+- Une procédure de test pour une centrale inertielle → tangible : centrale inertielle (équipement)
+- Un code source de contrôle d'un système de guidage → tangible : logiciel de guidage (software)
+- Une spec matériaux pour un alliage de titane → tangible : alliage Ti-6Al-4V (matériau)
+
+Exemples de `item_identified: false` :
+- Un article de recherche sur des méthodes d'IA → pas de bien spécifique
+- Un schéma expliquant un concept scientifique → pas de bien spécifique
+- Un compte-rendu de réunion sans contenu technique → pas de bien
+- Un index de documents listant des P/N → référence-only, pas de savoir-faire
+- Une présentation marketing de l'entreprise → pas de bien
+- Une procédure qualité ISO générique → pas de bien
+- Un document RH, financier, juridique → pas de bien
+- Une lettre de transmission sans annexe technique → pas de bien
+
+═══════════════════════════════════════════════════════════════
+ÉTAPE 2 — IDENTIFICATION DU TANGIBLE (si `item_identified: true`)
+═══════════════════════════════════════════════════════════════
+
+MÉTHODES D'IDENTIFICATION (par ordre de priorité) :
+1. Contenu intrinsèque du document : mentions explicites de composants, équipements, systèmes avec descriptions
+2. Contexte client : matcher les P/N ou nomenclatures avec les familles de produits connues du client, reconnaître les noms de programmes
+3. Rattachement système : si le document porte sur une sous-partie, identifier le système supérieur
+4. Contexte documentaire : titre, convention de nommage, section ATA (aéronautique)
+
+Le tangible peut être un plan de pièce, mais aussi des spécifications techniques, une instruction de montage, un résultat de test, ou une procédure de programmation machine.
+
+PHASE DU CYCLE DE VIE :
+Identifier si le document se rapporte à la phase de développement, production ou utilisation du tangible. Cela impacte la classification (technologie de développement ≠ technologie de production ≠ technologie d'utilisation).
+
+Attention au CAS HYBRIDE : un document de modification/upgrade (Phase 23) génère de la technologie de DÉVELOPPEMENT dans un contexte d'UTILISATION. Classifier selon la NATURE du contenu, pas la phase du cycle de vie du produit.
+
+═══════════════════════════════════════════════════════════════
+RÈGLES
+═══════════════════════════════════════════════════════════════
+
+- Ne JAMAIS inventer ou supposer un tangible non présent dans le document
+- En cas de doute, préférer `item_identified: false` — les étapes suivantes ne peuvent pas corriger un faux positif ici
+- Quand l'identification est partielle, dire ce qui est connu et ce qui manque
+
+Nom du fichier: {filename}
+Lane présumée: {lane}
+
+Base de connaissances :
+{kb_block}
+
+Résumé consolidé des pages pertinentes :
+{document_block}
+
+Retourne UNIQUEMENT un JSON :
+{{
+  "item_identified": true,
+  "item_description": "description du tangible principal identifié et de ses caractéristiques techniques",
+  "item_category": "equipment|component|material|software|system|tooling|test_equipment|unknown",
+  "item_hierarchy": "système supérieur si identifiable, sinon null",
+  "identification_method": "intrinsic|client_context|system_link|document_context",
+  "lifecycle_phase": "development|production|use|mixed",
+  "technology_type": "development|production|use|null",
+  "program_context": "nom du programme associé si identifiable, sinon null",
+  "confidence": 0.0,
+  "reasoning": "justification factuelle — citer les éléments du document et du contexte client utilisés, signaler ce qui manque",
+  "keywords": ["mots-clés pour recherche dans les listes de contrôle"],
+  "identification_gaps": ["éléments manquants pour une identification complète"]
+}}
